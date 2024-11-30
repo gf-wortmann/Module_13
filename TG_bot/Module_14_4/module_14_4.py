@@ -4,13 +4,8 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import crud_functions as cruds
-import asyncio
 
-# import customtkinter
-
-# from aiogram.dispatcher import FSMContext
-
-api = "7551017406:AAFuUL8xQrIGSDWwYhwT3UxX2VYFeB-PnkA"
+api = "__API_TOKEN__"
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 contain = cruds.get_all_products()
@@ -35,7 +30,6 @@ kb = ReplyKeyboardMarkup(resize_keyboard=True)
 btn1 = KeyboardButton(text='Информация')
 btn2 = KeyboardButton(text='Рассчитать')
 btn3 = KeyboardButton(text='Купить')
-# buttons = [btn1, btn2]
 kb.row(btn1, btn2)
 kb.row(btn3)
 
@@ -77,7 +71,6 @@ async def main_menu(message):
 
 @dp.callback_query_handler(lambda call: call.data == 'calories')
 async def inline_calculate(call):
-    # await call.message.answer('calories')
     await set_age(call.message)
     await call.answer()
 
@@ -95,7 +88,6 @@ async def inform(message):
 
 @dp.message_handler(commands=['start'])
 async def start_message(message):
-    # print('Привет! Я бот помогающий твоему здоровью.')
     await message.answer("Привет! Я - бот, помогающий Вашему здоровью.", reply_markup=kb)
 
 
@@ -109,7 +101,6 @@ async def set_age(message):
 async def set_growth(message, state):
     await state.update_data(age=message.text)
     data = await state.get_data()
-    # await message.answer(f"Похоже, вам {data['age']} лет...")
     await message.answer('Введите свой рост:')
     await UserState.growth.set()
 
@@ -118,7 +109,6 @@ async def set_growth(message, state):
 async def set_weight(message, state):
     await state.update_data(growth=message.text)
     data = await state.get_data()
-    # await message.answer(f"Ого! Ваш рост целых {data['growth']} см!")
     await message.answer('Введите свой вес в кг:')
     await UserState.weight.set()
 
@@ -128,15 +118,8 @@ async def send_calories(message, state):
     await state.update_data(weight=message.text)
     data = await state.get_data()
     await state.finish()
-    # await message.answer(f"В Вашем возрасте, при Вашем весе и росте...")
     calories = mifflin_st_jeor(data)
     await message.answer(f"Суточная норма калорий равна {calories} ккал", reply_markup=kb)
-
-
-# @dp.message_handler(text=['превед', 'affe urzuz'])
-# async def preved_message(message):
-#     print("Медвед пришол!!")
-#     await message.answer("Affe Urzuz!")
 
 
 @dp.message_handler()
